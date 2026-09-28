@@ -1,10 +1,23 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PageController;
+use App\Http\Controllers\DashboardController;
 
-Route::get('/', [PageController::class, 'home'])->name('home');
 
-Route::get('/dashboard', [PageController::class, 'dashboard'])->name('dashboard'); 
+Route::get('/', function () {
+    return view('welcome');
+});
 
-Route::get('/sobre', [PageController::class, 'sobre'])->name('sobre');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile/{user}', [ProfileController::class, 'show'])->name('perfil.show');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+});
+
+require __DIR__.'/auth.php';
