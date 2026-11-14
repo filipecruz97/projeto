@@ -2,64 +2,84 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
-
+use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+     public function index(Request $request)
     {
-        //
+        $categories = $request->user()
+            ->categories()
+            ->latest()
+            ->paginate(10);
+
+        return view('categories.index', compact('categories'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('categories.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('categories')->where('user_id', $request->user()->id),
+            ],
+            'type' => ['required', 'in:income,expense'],
+            'description' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $request->user()->categories()->create($validated);
+
+        return redirect()
+            ->route('categories.index')
+            ->with('success', 'Categoria cadastrada com sucesso.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(Request $request, Category $category)
     {
-        //
+        abort_unless($category->user_id === $request->user()->id, 403);
+
+        return view('categories.edit', compact('category'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, Category $category)
     {
-        //
+        abort_unless($category->user_id === $request->user()->id, 403);
+
+        $validated = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('categories')->where('user_id', $request->user()->id)->ignore($category->id),
+            ],
+            'type' => ['required', 'in:income,expense'],
+            'description' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $category->update($validated);
+
+        return redirect()
+            ->route('categories.index')
+            ->with('success', 'Categoria atualizada com sucesso.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(Request $request, Category $category)
     {
-        //
-    }
+        abort_unless($category->user_id === $request->user()->id, 403);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $category->delete();
+
+        return redirect()
+            ->route('categories.index')
+            ->with('success', 'Categoria excluída com sucesso.');
     }
 }
