@@ -4,10 +4,12 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\TransactionController;
 
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('categories', CategoryController::class)->except(['show']);
+    Route::resource('transactions', TransactionController::class)->except(['show']);
 });
 
 Route::get('/', function () {
