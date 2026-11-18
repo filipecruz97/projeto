@@ -71,10 +71,16 @@ class CategoryController extends Controller
             ->route('categories.index')
             ->with('success', 'Categoria atualizada com sucesso.');
     }
-
+    
     public function destroy(Request $request, Category $category)
     {
         abort_unless($category->user_id === $request->user()->id, 403);
+
+        if ($category->transactions()->exists()) {
+            return redirect()
+                ->route('categories.index')
+                ->with('error', 'Não é possível excluir uma categoria que já possui lançamentos vinculados.');
+        }
 
         $category->delete();
 

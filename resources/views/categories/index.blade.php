@@ -19,6 +19,12 @@
                 </div>
             @endif
 
+                        @if (session('error'))
+                <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-md">
+                    {{ session('error') }}
+                </div>
+            @endif
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 @if ($categories->isEmpty())
                     <p class="text-gray-500 text-center py-6">Nenhuma categoria cadastrada ainda.</p>

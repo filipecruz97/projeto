@@ -19,9 +19,83 @@
                 </div>
             @endif
 
+            {{-- Filtros --}}
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 mb-6">
+                <form method="GET" action="{{ route('transactions.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 items-end">
+                    <div>
+                        <label for="type" class="block text-sm font-medium text-gray-700">Tipo</label>
+                        <select name="type" id="type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                            <option value="">Todos</option>
+                            <option value="income" {{ request('type') === 'income' ? 'selected' : '' }}>Receita</option>
+                            <option value="expense" {{ request('type') === 'expense' ? 'selected' : '' }}>Despesa</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                        <select name="status" id="status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                            <option value="">Todos</option>
+                            <option value="paid" {{ request('status') === 'paid' ? 'selected' : '' }}>Pago</option>
+                            <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pendente</option>
+                            <option value="cancelled" {{ request('status') === 'cancelled' ? 'selected' : '' }}>Cancelado</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="category_id" class="block text-sm font-medium text-gray-700">Categoria</label>
+                        <select name="category_id" id="category_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                            <option value="">Todas</option>
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="month" class="block text-sm font-medium text-gray-700">Mês</label>
+                        <select name="month" id="month" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                            <option value="">Todos</option>
+                            @foreach ([
+                                1 => 'Janeiro', 2 => 'Fevereiro', 3 => 'Março', 4 => 'Abril',
+                                5 => 'Maio', 6 => 'Junho', 7 => 'Julho', 8 => 'Agosto',
+                                9 => 'Setembro', 10 => 'Outubro', 11 => 'Novembro', 12 => 'Dezembro'
+                            ] as $num => $label)
+                                <option value="{{ $num }}" {{ request('month') == $num ? 'selected' : '' }}>
+                                    {{ $label }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="year" class="block text-sm font-medium text-gray-700">Ano</label>
+                        <input type="number" name="year" id="year" min="2000" max="2100"
+                            value="{{ request('year') }}" placeholder="{{ date('Y') }}"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button type="submit" class="px-4 py-2 bg-gray-800 text-white rounded-md text-sm hover:bg-gray-700">
+                            Filtrar
+                        </button>
+                        <a href="{{ route('transactions.index') }}" class="px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50">
+                            Limpar
+                        </a>
+                    </div>
+                </form>
+            </div>
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 @if ($transactions->isEmpty())
-                    <p class="text-gray-500 text-center py-6">Nenhum lançamento cadastrado ainda.</p>
+                    <div class="text-center py-6">
+                        <p class="text-gray-500">
+                            {{ request()->anyFilled(['type', 'status', 'category_id', 'month', 'year'])
+                                ? 'Nenhum lançamento encontrado para os filtros aplicados.'
+                                : 'Nenhum lançamento cadastrado ainda.' }}
+                        </p>
+                    </div>
                 @else
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
