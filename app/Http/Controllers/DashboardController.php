@@ -40,6 +40,14 @@ class DashboardController extends Controller
             ->where('status', 'pending')
             ->sum('amount');
 
+        $recentTransactions = $request->user()
+            ->transactions()
+            ->with('category')
+            ->orderByDesc('date')
+            ->orderByDesc('id')
+            ->limit(5)
+            ->get();    
+
         return view('dashboard', compact(
             'month',
             'year',
@@ -47,6 +55,7 @@ class DashboardController extends Controller
             'paidExpenses',
             'balance',
             'pendingTotal',
+            'recentTransactions',
         ));
     }
 }

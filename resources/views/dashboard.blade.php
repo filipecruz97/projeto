@@ -79,6 +79,54 @@
             </dd>
         </div>
         </dl>
+</section>
+<section class="mt-6 rounded-lg border border-gray-200 bg-white p-5 shadow-sm"
+    aria-labelledby="recent-transactions-heading">
+    <h2 id="recent-transactions-heading" class="text-lg font-semibold text-gray-900">
+        Últimas transações
+    </h2>
+
+    <div class="mt-4 overflow-x-auto">
+        <table class="w-full text-left text-sm" aria-labelledby="recent-transactions-heading">
+            <thead class="bg-gray-50 text-gray-600">
+                <tr>
+                    <th scope="col" class="px-4 py-3">Descrição</th>
+                    <th scope="col" class="px-4 py-3">Categoria</th>
+                    <th scope="col" class="px-4 py-3">Tipo</th>
+                    <th scope="col" class="px-4 py-3 text-right">Valor</th>
+                    <th scope="col" class="px-4 py-3">Data</th>
+                    <th scope="col" class="px-4 py-3">Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 text-gray-700">
+                @forelse ($recentTransactions as $transaction)
+                    <tr>
+                        <td class="px-4 py-3 font-medium text-gray-900">{{ $transaction->description }}</td>
+                        <td class="px-4 py-3">{{ $transaction->category?->name ?? 'Sem categoria' }}</td>
+                        <td class="px-4 py-3">{{ $transaction->type === 'income' ? 'Receita' : 'Despesa' }}</td>
+                        <td class="whitespace-nowrap px-4 py-3 text-right">
+                            R$ {{ number_format($transaction->amount, 2, ',', '.') }}
+                        </td>
+                        <td class="whitespace-nowrap px-4 py-3">{{ $transaction->date->format('d/m/Y') }}</td>
+                        <td class="px-4 py-3">
+                            {{ match ($transaction->status) {
+                                'paid' => 'Pago',
+                                'pending' => 'Pendente',
+                                'cancelled' => 'Cancelado',
+                                default => '—',
+                            } }}
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="px-4 py-5 text-gray-600">
+                            Nenhuma transação cadastrada ainda.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 </section>    
     </div>
 </x-app-layout>
