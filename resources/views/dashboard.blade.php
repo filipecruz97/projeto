@@ -49,5 +49,36 @@
                 </form>
             </div>
         </div>
+    <section class="mt-6" aria-labelledby="monthly-summary-heading">
+    <h2 id="monthly-summary-heading" class="text-lg font-semibold text-gray-900">
+        Resumo do mês
+    </h2>
+    <dl class="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+            <dt class="text-sm font-medium text-gray-600">Receitas pagas</dt>
+            <dd class="mt-2 text-2xl font-semibold text-gray-900">
+                R$ {{ number_format($paidIncome, 2, ',', '.') }}
+            </dd>
+        </div>
+     <div class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+            <dt class="text-sm font-medium text-gray-600">Despesas pagas.</dt>
+            <dd class="mt-2 text-2xl font-semibold text-gray-900">
+                R$ {{ number_format($paidExpenses, 2, ',', '.') }}
+            </dd>
+        </div>
+         <div class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+            <dt class="text-sm font-medium text-gray-600">Saldo do mês</dt>
+            <dd class="mt-2 text-2xl font-semibold text-gray-900">
+                R$ {{ number_format($balance, 2, ',', '.') }}
+            </dd>
+        </div>
+         <div class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+            <dt class="text-sm font-medium text-gray-600">Total pendente</dt>
+            <dd class="mt-2 text-2xl font-semibold text-gray-900">
+                R$ {{ number_format($pendingTotal, 2, ',', '.') }}
+            </dd>
+        </div>
+        </dl>
+</section>    
     </div>
 </x-app-layout>
