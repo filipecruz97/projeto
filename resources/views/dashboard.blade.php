@@ -127,6 +127,29 @@
             </tbody>
         </table>
     </div>
+</section>
+<section class="mt-6 rounded-lg border border-gray-200 bg-white p-5 shadow-sm"
+    aria-labelledby="category-expenses-heading">
+    <h2 id="category-expenses-heading" class="text-lg font-semibold text-gray-900">
+        Despesas pagas por categoria
+    </h2>
+
+    <ul class="mt-3 divide-y divide-gray-200">
+        @forelse ($expensesByCategory as $categoryExpense)
+            <li class="flex items-baseline justify-between gap-4 py-3 text-sm">
+                <span class="min-w-0 break-words text-gray-700">
+                    {{ $categoryExpense->category->name }}
+                </span>
+                <span class="whitespace-nowrap font-semibold text-gray-900">
+                    R$ {{ number_format($categoryExpense->total, 2, ',', '.') }}
+                </span>
+            </li>
+        @empty
+            <li class="py-3 text-sm text-gray-600">
+                Nenhuma despesa paga neste período.
+            </li>
+        @endforelse
+    </ul>
 </section>    
     </div>
 </x-app-layout>

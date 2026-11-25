@@ -46,7 +46,17 @@ class DashboardController extends Controller
             ->orderByDesc('date')
             ->orderByDesc('id')
             ->limit(5)
-            ->get();    
+            ->get();  
+
+        $expensesByCategory = (clone $periodTransactions)
+            ->where('type', 'expense')
+            ->where('status', 'paid')
+            ->select('category_id')
+            ->selectRaw('SUM(amount) as total')
+            ->groupBy('category_id')
+            ->with('category:id,name')
+            ->orderByDesc('total')
+            ->get();      
 
         return view('dashboard', compact(
             'month',
@@ -56,6 +66,7 @@ class DashboardController extends Controller
             'balance',
             'pendingTotal',
             'recentTransactions',
+            'expensesByCategory'
         ));
     }
 }
