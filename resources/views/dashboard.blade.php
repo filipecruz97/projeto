@@ -150,6 +150,23 @@
             </li>
         @endforelse
     </ul>
+@if ($expensesByCategory->isNotEmpty())
+    @php
+        $chartExpenses = $expensesByCategory->map(fn ($categoryExpense) => [
+            'label' => $categoryExpense->category->name,
+            'total' => (float) $categoryExpense->total,
+        ]);
+    @endphp
+
+    <div class="relative mt-6 h-72">
+        <canvas
+            id="expenses-by-category-chart"
+            data-expenses="{{ $chartExpenses->toJson() }}"
+            role="img"
+            aria-label="Gráfico de barras das despesas pagas por categoria"
+        ></canvas>
+    </div>
+@endif    
 </section>    
     </div>
 </x-app-layout>
