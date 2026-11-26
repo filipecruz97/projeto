@@ -133,7 +133,7 @@
                                                     <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">Pendente</span>
                                                     @break
                                                 @case('cancelled')
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full bg-gray-100 text-gray-800">Cancelado</span>
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-medium rounded-full bg-red-100 text-red-800">Cancelado</span>
                                                     @break
                                             @endswitch
                                         </td>

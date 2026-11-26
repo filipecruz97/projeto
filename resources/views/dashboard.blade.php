@@ -56,25 +56,30 @@
     <dl class="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
             <dt class="text-sm font-medium text-gray-600">Receitas pagas</dt>
-            <dd class="mt-2 text-2xl font-semibold text-gray-900">
+            <dd class="mt-2 text-2xl font-semibold text-green-800">
                 R$ {{ number_format($paidIncome, 2, ',', '.') }}
             </dd>
         </div>
      <div class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
-            <dt class="text-sm font-medium text-gray-600">Despesas pagas.</dt>
-            <dd class="mt-2 text-2xl font-semibold text-gray-900">
+            <dt class="text-sm font-medium text-gray-600">Despesas pagas</dt>
+            <dd class="mt-2 text-2xl font-semibold text-red-800">
                 R$ {{ number_format($paidExpenses, 2, ',', '.') }}
             </dd>
         </div>
          <div class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
             <dt class="text-sm font-medium text-gray-600">Saldo do mês</dt>
-            <dd class="mt-2 text-2xl font-semibold text-gray-900">
+            <dd @class([
+                'mt-2 text-2xl font-semibold',
+                'text-green-800' => $balance > 0,
+                'text-red-800' => $balance < 0,
+                'text-gray-900' => $balance == 0,
+            ])>
                 R$ {{ number_format($balance, 2, ',', '.') }}
             </dd>
         </div>
          <div class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
             <dt class="text-sm font-medium text-gray-600">Total pendente</dt>
-            <dd class="mt-2 text-2xl font-semibold text-gray-900">
+            <dd class="mt-2 text-2xl font-semibold text-amber-800">
                 R$ {{ number_format($pendingTotal, 2, ',', '.') }}
             </dd>
         </div>
@@ -104,17 +109,22 @@
                         <td class="px-4 py-3 font-medium text-gray-900">{{ $transaction->description }}</td>
                         <td class="px-4 py-3">{{ $transaction->category?->name ?? 'Sem categoria' }}</td>
                         <td class="px-4 py-3">{{ $transaction->type === 'income' ? 'Receita' : 'Despesa' }}</td>
-                        <td class="whitespace-nowrap px-4 py-3 text-right">
+                        <td class="whitespace-nowrap px-4 py-3 text-right font-medium {{ $transaction->type === 'income' ? 'text-green-800' : 'text-red-800' }}">
                             R$ {{ number_format($transaction->amount, 2, ',', '.') }}
                         </td>
                         <td class="whitespace-nowrap px-4 py-3">{{ $transaction->date->format('d/m/Y') }}</td>
                         <td class="px-4 py-3">
-                            {{ match ($transaction->status) {
-                                'paid' => 'Pago',
-                                'pending' => 'Pendente',
-                                'cancelled' => 'Cancelado',
-                                default => '—',
-                            } }}
+                            @php
+                                [$statusLabel, $statusColors] = match ($transaction->status) {
+                                    'paid' => ['Pago', 'bg-green-100 text-green-800'],
+                                    'pending' => ['Pendente', 'bg-amber-100 text-amber-800'],
+                                    'cancelled' => ['Cancelado', 'bg-red-100 text-red-800'],
+                                    default => ['—', 'bg-gray-100 text-gray-700'],
+                                };
+                            @endphp
+                            <span class="inline-flex whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-medium {{ $statusColors }}">
+                                {{ $statusLabel }}
+                            </span>
                         </td>
                     </tr>
                 @empty
@@ -140,7 +150,7 @@
                 <span class="min-w-0 break-words text-gray-700">
                     {{ $categoryExpense->category->name }}
                 </span>
-                <span class="whitespace-nowrap font-semibold text-gray-900">
+                <span class="whitespace-nowrap font-semibold text-red-800">
                     R$ {{ number_format($categoryExpense->total, 2, ',', '.') }}
                 </span>
             </li>

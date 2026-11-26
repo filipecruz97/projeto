@@ -1,6 +1,7 @@
 
 
 import Alpine from 'alpinejs';
+import './money-input';
 
 window.Alpine = Alpine;
 
@@ -25,7 +26,7 @@ if (expensesCanvas) {
                 labels: expenses.map(({ label }) => label),
                 datasets: [{
                     data: expenses.map(({ total }) => total),
-                    backgroundColor: '#4f46e5',
+                    backgroundColor: '#ef4444',
                     borderRadius: 4,
                     maxBarThickness: 32,
                 }],
